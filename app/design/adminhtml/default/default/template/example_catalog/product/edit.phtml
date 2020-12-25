@@ -1,0 +1,77 @@
+<?php /** @see Example_Catalog_Block_Adminhtml_Product_Edit */ ?>
+
+<div class="content-header">
+    <h3 class="icon-head head-products"><?php echo $this->getHeader() ?></h3>
+    <p class="content-buttons form-buttons">
+        <?php echo $this->getBackButtonHtml() ?>
+        <?php echo $this->getCancelButtonHtml() ?>
+        <?php echo $this->getSaveAndEditButtonHtml() ?>
+    </p>
+</div>
+<form action="<?php echo $this->getSaveUrl() ?>" method="post" id="product_edit_form" enctype="multipart/form-data">
+    <?php echo $this->getBlockHtml('formkey') ?>
+    <div style="display:none"></div>
+</form>
+<script type="text/javascript">
+    var productTemplateSyntax = /(^|.|\r|\n)({{(\w+)}})/;
+    var productForm = new varienForm('product_edit_form', '<?php echo $this->getValidationUrl() ?>');
+    productForm._processValidationResult = function (transport) {
+        var response = transport.responseText.evalJSON();
+        if (response.error) {
+            if (response.attribute && $(response.attribute)) {
+                $(response.attribute).setHasError(true, productForm);
+                Validation.ajaxError($(response.attribute), response.message);
+                if (!Prototype.Browser.IE) {
+                    $(response.attribute).focus();
+                }
+            } else if ($('messages')) {
+                $('messages').innerHTML = response.message;
+            }
+        } else {
+            productForm._submit();
+        }
+    };
+
+    function saveAndContinueEdit(url) {
+        productForm.submit(url);
+    }
+
+    function setSettings(urlTemplate, setElement, typeElement) {
+        var template = new Template(urlTemplate, productTemplateSyntax);
+        setLocation(template.evaluate({attribute_set: $F(setElement), type: $F(typeElement)}));
+    }
+
+    function setSuperSettings(urlTemplate, attributesClass, validateField) {
+        var attributesFields = $$('.' + attributesClass);
+        var attributes = Form.serializeElements(attributesFields, true).attribute;
+        if (typeof attributes == 'string') {
+            attributes = [attributes];
+        }
+
+        if (!attributes) {
+            $(validateField).value = 'no-attributes';
+        } else {
+            $(validateField).value = 'has-attributes';
+        }
+
+        if (productForm.validator.validate()) {
+            var template = new Template(urlTemplate, productTemplateSyntax);
+            var url = template.evaluate({
+                attributes: encode_base64(attributes.join(',')).replace(new RegExp('/', 'g'), '%2F').replace(new RegExp('=', 'g'), '%3D')
+            });
+            setLocation(url);
+        }
+    }
+
+    function checkMaxLength(Object, MaxLen) {
+        if (Object.value.length > MaxLen - 1) {
+            Object.value = Object.value.substr(0, MaxLen);
+        }
+        return 1;
+    }
+
+    Validation.addAllThese([
+        ['validate-super-product-attributes', '<?php echo Mage::helper('core')->jsQuoteEscape(Mage::helper('catalog')->__('Please select one or more attributes.')) ?>', function (v) {
+            return (v != "no-attributes");
+        }]]);
+</script>

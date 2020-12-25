@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<layout>
+    <example_catalog_adminhtml_product_edit>
+        <update handle="editor"/>
+        <reference name="content">
+            <block type="example_catalog/adminhtml_product_edit" name="product_edit"></block>
+        </reference>
+        <reference name="left">
+            <block type="adminhtml/store_switcher" name="store_switcher" before="-"></block>
+            <block type="example_catalog/adminhtml_product_tabs" name="product_tabs"></block>
+        </reference>
+        <reference name="js">
+            <block type="core/template" name="catalog.wysiwyg.js" template="catalog/wysiwyg/js.phtml"/>
+        </reference>
+    </example_catalog_adminhtml_product_edit>
+</layout>
