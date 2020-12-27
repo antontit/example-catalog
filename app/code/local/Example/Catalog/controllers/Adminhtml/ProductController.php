@@ -65,8 +65,8 @@ class Example_Catalog_Adminhtml_ProductController
             $model->update(
                 $productId   = $this->_getInputProductId(),
                 $productName = $request->getPost('name'),
-                $price       = (int) $request->getPost('price'),
-                $qty         = (int) $request->getPost('qty'),
+                $price       = (float) $request->getPost('price'),
+                $qty         = (float) $request->getPost('qty'),
                 $storeId     = $this->_getInputStoreId()
             );
 
