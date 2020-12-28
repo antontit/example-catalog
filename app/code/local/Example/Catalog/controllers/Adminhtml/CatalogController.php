@@ -43,7 +43,7 @@ class Example_Catalog_Adminhtml_CatalogController
 
     private function _handleMassAction(callable $handler)
     {
-        $productIds = (array) $this->getRequest()->getParam('product');
+        $productIds = $this->getRequest()->getParam('product');
         $storeId    = (int) $this->getRequest()->getParam('store', 0);
 
         if (!is_array($productIds)) {
@@ -59,6 +59,7 @@ class Example_Catalog_Adminhtml_CatalogController
                 }
             }
         }
+        
         $this->_redirect('*/adminhtml_catalog/index', array('store' => $storeId));
     }
 
